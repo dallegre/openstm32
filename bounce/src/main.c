@@ -12,9 +12,9 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_nucleo.h"
 #include "ssd1306.h"
+#include "mpu_defines.h"
 
-
-I2C_HandleTypeDef I2CxHandle;
+I2C_HandleTypeDef I2cHandle;
 SPI_HandleTypeDef SpiHandle;
 
 static void SystemClock_Config(void);
@@ -52,6 +52,16 @@ int main(void)
 	SpiHandle.Init.NSS               = SPI_NSS_SOFT;
 	SpiHandle.Init.TIMode            = SPI_TIMODE_DISABLE;
 	SpiHandle.Init.Mode = SPI_MODE_MASTER;
+
+	I2cHandle.Instance             = I2C1;
+	I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_10BIT;
+	I2cHandle.Init.ClockSpeed      = 400000;
+	I2cHandle.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+	I2cHandle.Init.DutyCycle       = I2C_DUTYCYCLE_16_9;
+	I2cHandle.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+	I2cHandle.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
+	I2cHandle.Init.OwnAddress1     = MPU6050_ADDRESS;
+	I2cHandle.Init.OwnAddress2     = 0xFE;
 
 	if(HAL_SPI_Init(&SpiHandle) != HAL_OK)
 	{
