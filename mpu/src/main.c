@@ -25,16 +25,6 @@ int main(void)
 
 	HAL_Init();
 
-	//HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
-	//HAL_NVIC_EnableIRQ(SPI3_IRQn);
-	//HAL_NVIC_SetPriority(I2C3_EV_IRQn, 0, 1);
-	//HAL_NVIC_SetPriority(SPI3_IRQn, 1, 1);
-
-	  //HAL_NVIC_SetPriority(I2C1_ER_IRQn, 1, 0);
-	  //HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
-	  //HAL_NVIC_SetPriority(I2C1_EV_IRQn, 2, 0);
-	  //HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
-
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_GPIOC_CLK_ENABLE();
@@ -124,22 +114,11 @@ int main(void)
 	SSD1306Init();
 	clearScreen();
 
-	uint8_t string[] = "gx is: ";
-	uint8_t numberstring[] = "000";
-	uint8_t string2[] = "gy is: ";
-	uint8_t numberstring2[] = "000";
-	uint8_t string3[] = "mpu good is: ";
-	uint8_t numberstring3[] = "000";
-
 	int count = 0, count2 = 0, count3 = 0;
 
 	int x = 64;
 	int y = 32;
 	int xprev, yprev;
-
-	//stringDraw(1, 3, string, 1);
-	//stringDraw(3, 3, string2, 1);
-	//stringDraw(5, 3, string3, 1);
 
 	uint8_t addr = 12;
 	uint8_t data = 13;
@@ -158,31 +137,6 @@ int main(void)
 
     	count =  (int)accels[0];
     	count2 = (int)accels[1];
-
-    	//process the gyroscope output a bit
-    	/*
-    	if(count < 0){
-    		count *= -1;
-    	}
-    	if(count < 1000){
-    		numberstring[2] =  int2ascii(count%10);
-			numberstring[1] =  int2ascii((count/10)%10);
-			numberstring[0] =  int2ascii((count/100)%10);
-    	}
-
-    	if(count2 < 0){
-    		count2 *= -1;
-    	}
-    	if(count2 < 1000){
-			numberstring2[2] = int2ascii(count2%10);
-			numberstring2[1] = int2ascii((count2/10)%10);
-			numberstring2[0] = int2ascii((count2/100)%10);
-    	}
-
-		numberstring3[2] = int2ascii(count3%10);
-		numberstring3[1] = int2ascii((count3/10)%10);
-		numberstring3[0] = int2ascii((count3/100)%10);
-		*/
 
 		xprev = x;
 		yprev = y;
@@ -206,11 +160,6 @@ int main(void)
 
 		circleDraw(x,y,5,1);
 
-		//update the screen
-		//stringDraw(1, 14, numberstring, 1);
-		//stringDraw(3, 14, numberstring2, 1);
-		//stringDraw(5, 16, numberstring3, 1);
-
 		HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_3);
 	    BSP_LED_Toggle(LED2);
 
@@ -219,10 +168,6 @@ int main(void)
 
 		HAL_Delay(5);
 
-		//clear the screen
-		//stringDraw(1, 14, numberstring,  0);
-		//stringDraw(3, 14, numberstring2, 0);
-		//stringDraw(5, 16, numberstring3, 0);
 		circleDraw(xprev,yprev,5,0);
 
 	}
@@ -309,38 +254,6 @@ void I2C1_EV_IRQHandler(void)
 {
   HAL_I2C_EV_IRQHandler(& I2cHandle);
 }
-
-/*
-static void SystemClock_Config(void)
-{
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-
-  __HAL_RCC_PWR_CLK_ENABLE();
-
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 360;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  HAL_RCC_OscConfig(&RCC_OscInitStruct);
-
-
-  HAL_PWREx_EnableOverDrive();
-
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
-}
-  */
 
 
 void SystemClock_Config(void)

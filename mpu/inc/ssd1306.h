@@ -559,8 +559,6 @@ void Set_Display_On_Off(unsigned char d)
     SSD1306SendCommand(ramData, 1);
 }
 
-
-
 int int2ascii(int input){
 	return input+48;
 }

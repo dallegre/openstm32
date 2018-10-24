@@ -1,22 +1,5 @@
 #include "mpu_defines.h"
 
-
-
-int  gyro_xout_h, gyro_xout_l, gyro_yout_h, gyro_yout_l, gyro_zout_h, gyro_zout_l,
-	gyro_xout, gyro_yout, gyro_zout, gyro_xrate, gyro_yrate, gyro_zrate,
-	gyro_xoffset, gyro_yoffset, gyro_zoffset, gyro_xsum, gyro_ysum, gyro_zsum,
-	accel_xout_h, accel_xout_l, accel_yout_h, accel_yout_l, accel_zout_h, accel_zout_l,
-	accel_xout, accel_yout, accel_zout, accel_xangle, accel_yangle, accel_average;
-
-int  gyro_xsensitivity = 20, gyro_ysensitivity = 20, gyro_zsensitivity = 20;
-
-//void setup_i2c(void){
-
-//  Wire.begin(MPU6050_ADDRESS);
-//  delay(1000);
-
-//}
-
 int read_i2c(uint8_t address);
 void write_i2c(uint8_t address, uint8_t data);
 
@@ -52,23 +35,8 @@ void initialize_mpu(void){
 	  write_i2c(MPU6050_RA_GYRO_CONFIG, 0b00001000);
 	  //Disable accel self tests, scale of +-2g, no DHPF
 	  write_i2c(MPU6050_RA_ACCEL_CONFIG, 0x00);
-	  //Freefall threshold of |0mg|
-	  //can't find this register in the register map.
-	  //write_i2c(MPU6050_RA_FF_THR, 0x00);
-	  //Freefall duration limit of 0
-	  //can't find this register in the register map.
-	  //write_i2c(MPU6050_RA_FF_DUR, 0x00);
 	  //Motion threshold of 0mg
 	  write_i2c(MPU6050_RA_MOT_THR, 0x00);
-	  //Motion duration of 0s
-	  //can't find this register in the register map.
-	  //write_i2c(MPU6050_RA_MOT_DUR, 0x00);
-	  //Zero motion threshold
-	  //can't find this register in the register map.
-	  //write_i2c(MPU6050_RA_ZRMOT_THR, 0x00);
-	  //Zero motion duration threshold
-	  //can't find this register in the register map.
-	  //write_i2c(MPU6050_RA_ZRMOT_DUR, 0x00);
 	  //Disable sensor output to FIFO buffer
 	  write_i2c(MPU6050_RA_FIFO_EN, 0x00);
 
@@ -133,6 +101,8 @@ void get_gyro_rates(float* rates){
   int gyro_zout_h = read_i2c(MPU6050_RA_GYRO_ZOUT_H);
   int gyro_zout_l = read_i2c(MPU6050_RA_GYRO_ZOUT_L);
 
+  int gyro_xoffset = 0, gyro_yoffset = 0, gyro_zoffset = 0;
+
   int gyro_xout = ((gyro_xout_h<<8)|gyro_xout_l) - gyro_xoffset;   //will want to add calibration offsets later.
   int gyro_yout = ((gyro_yout_h<<8)|gyro_yout_l) - gyro_yoffset;
   int gyro_zout = ((gyro_zout_h<<8)|gyro_zout_l) - gyro_zoffset;
@@ -159,16 +129,16 @@ void get_gyro_rates(float* rates){
 
 void get_accel_values(int* accels){
 
-  accel_xout_h = read_i2c(MPU6050_RA_ACCEL_XOUT_H);
-  accel_xout_l = read_i2c(MPU6050_RA_ACCEL_XOUT_L);
-  accel_yout_h = read_i2c(MPU6050_RA_ACCEL_YOUT_H);
-  accel_yout_l = read_i2c(MPU6050_RA_ACCEL_YOUT_L);
-  accel_zout_h = read_i2c(MPU6050_RA_ACCEL_ZOUT_H);
-  accel_zout_l = read_i2c(MPU6050_RA_ACCEL_ZOUT_L);
+  int accel_xout_h = read_i2c(MPU6050_RA_ACCEL_XOUT_H);
+  int accel_xout_l = read_i2c(MPU6050_RA_ACCEL_XOUT_L);
+  int accel_yout_h = read_i2c(MPU6050_RA_ACCEL_YOUT_H);
+  int accel_yout_l = read_i2c(MPU6050_RA_ACCEL_YOUT_L);
+  int accel_zout_h = read_i2c(MPU6050_RA_ACCEL_ZOUT_H);
+  int accel_zout_l = read_i2c(MPU6050_RA_ACCEL_ZOUT_L);
 
-  accel_xout = (short)((accel_xout_h<<8)|accel_xout_l);
-  accel_yout = (short)((accel_yout_h<<8)|accel_yout_l);
-  accel_zout = (short)((accel_zout_h<<8)|accel_zout_l);
+  short accel_xout = (short)((accel_xout_h<<8)|accel_xout_l);
+  short accel_yout = (short)((accel_yout_h<<8)|accel_yout_l);
+  short accel_zout = (short)((accel_zout_h<<8)|accel_zout_l);
 
   int accelarr[3] = {accel_xout, accel_yout, accel_zout};
   *accels = accelarr[0];
